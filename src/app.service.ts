@@ -12,6 +12,8 @@ import { registerUserDTO } from './dto/register-user.dto';
 import { compareSync } from 'bcrypt';
 import { hashSync } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
+import { extname, join } from 'path';
 
 @Injectable()
 export class AppService {
@@ -19,6 +21,45 @@ export class AppService {
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
   ) {}
+
+  async uploadMahasiswaFoto(file: Express.Multer.File, nim: string) {
+    const mahasiswa = await this.prisma.mahasiswa.findFirst({ where: { nim } });
+    if (!mahasiswa) throw new NotFoundException('Mahasiswa Tidak Ditemukan');
+
+    if (mahasiswa.foto_profile) {
+      const filePath = join(__dirname, `../uploads/${mahasiswa.foto_profile}`);
+      if (existsSync(filePath)) {
+        rmSync(filePath);
+      }
+    }
+
+    const uploadPath = join(__dirname,`../uploads/`);
+    if (!existsSync(uploadPath)) {
+      mkdirSync(uploadPath);
+    }
+
+    const fileExt = extname(file.originalname);
+    const baseFilename = mahasiswa.nim;
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const filename = `${baseFilename}-${uniqueSuffix}${fileExt}`;
+    const filePath = `${uploadPath}${filename}`;
+
+    writeFileSync(filePath, file.buffer);
+    await this.prisma.mahasiswa.update({
+      where: { nim },
+      data: { foto_profile: filename },
+    });
+
+    return filename;
+  }
+
+  async getMahasiwaFoto(nim: string) {
+    const mahasiswa = await this.prisma.mahasiswa.findFirst({ where: { nim } });
+    if (!mahasiswa) throw new NotFoundException('Mahasiswa Tidak Ditemukan');
+    return mahasiswa.foto_profile;
+  }
+
+
   async register(data: registerUserDTO) {
     try {
     } catch (error) {
@@ -43,6 +84,7 @@ export class AppService {
         username: data.username,
         password: hash,
         role: 'USER',
+        foto_profile: 'foto_profile',
       },
     });
     return newUser;
@@ -62,7 +104,7 @@ export class AppService {
         throw new BadRequestException('Password Salah');
 
       const payload = {
-        id : user.id,
+        id: user.id,
         username: user.username,
         role: user.role,
       };
@@ -71,7 +113,7 @@ export class AppService {
 
       return {
         token: token,
-        user : payload,
+        user: payload,
       };
     } catch (err) {
       if (err instanceof HttpException) throw err;
@@ -102,9 +144,9 @@ export class AppService {
     return await this.prisma.user.findMany();
   }
 
-  getHello(): string {
-    return 'Hello World! Alisultn';
-  }
+  // getHello(): string {
+  //   return 'Hello World! Alisultn';
+  // }
 
   async getMahasiswa() {
     return await this.prisma.mahasiswa.findMany();
@@ -185,4 +227,5 @@ export class AppService {
       data,
     });
   }
+ 
 }
