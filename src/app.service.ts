@@ -22,6 +22,20 @@ export class AppService {
     private readonly jwtService: JwtService,
   ) {}
 
+
+  async searchMahasiswa(filters: { nama?: string; nim?: string; jurusan?: string }) {
+    const { nama, nim, jurusan } = filters;
+  
+    // Membuat kondisi pencarian dinamis
+    const where: any = {};
+    if (nim) where.nim = { contains: nim, mode: 'insensitive' };
+    // Melakukan query ke database menggunakan Prisma
+    return await this.prisma.mahasiswa.findMany({
+      where,
+    });
+  }
+
+
   async uploadMahasiswaFoto(file: Express.Multer.File, nim: string) {
     const mahasiswa = await this.prisma.mahasiswa.findFirst({ where: { nim } });
     if (!mahasiswa) throw new NotFoundException('Mahasiswa Tidak Ditemukan');

@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Res,
   UploadedFile,
   UseGuards,
@@ -26,10 +27,17 @@ import { User } from './entity/user.entity';
 import { AuthGuard } from './auth.guard';
 import { UserDecorator } from './user.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { SearchMahasiswaDTO } from './dto/search-mahasiswa.dto';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
+
+  // Endpoint pencarian mahasiswa menggunakan query
+  @Get('mahasiswa/search')
+  searchMahasiswa(@Query() filters: SearchMahasiswaDTO) {
+    return this.appService.searchMahasiswa(filters);
+  }
 
   @Post('mahasiswa/:nim/upload')
   @ApiConsumes("multipart/form-data")
