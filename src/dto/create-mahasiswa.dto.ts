@@ -6,7 +6,7 @@ export class CreateMahasiswaDTO {
 
     // membuat properties nim yang bersifat string, tidak boleh kosong, dan panjangnya 
     // 30 karakter
-    @ApiProperty({ description : "NIM Mahasiswa", type : String, example : "105841102222" })
+    @ApiProperty({ description : "NIM Mahasiswa", type : String, example : "105841100122" })
     @IsString()
     @IsNotEmpty()
     @Length(1, 30)
@@ -14,7 +14,7 @@ export class CreateMahasiswaDTO {
 
     //membuat properties nama yang bersifat string, tidak boleh kosong, dan panjangnya
     // 30 karakter
-    @ApiProperty({ description : "Nama Mahasiswa", type : String, example : "Ali Sulton S Palilati" })
+    @ApiProperty({ description : "Nama Mahasiswa", type : String, example : "Citimarwaa" })
     @IsString()
     @IsNotEmpty()
     @Length(1, 30)

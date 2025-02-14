@@ -5,7 +5,7 @@ export class registerUserDTO {
     @ApiProperty({
         description: 'username',
         type: String,
-        example: 'Alisultn',
+        example: 'Citimarwaa',
         required: true,
     })
     @IsString()

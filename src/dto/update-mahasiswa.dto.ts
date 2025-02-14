@@ -6,7 +6,7 @@ export class updateMahasiswaDTO {
   @ApiProperty({
     description: 'Nama Mahasiswa',
     type: String,
-    example: 'Alisultn',
+    example: 'Citimarwaa',
     required: false,
   })
   @IsString()

@@ -7,7 +7,7 @@ import { AuthModule } from './auth.module';
 import { ProfileModule } from './profile/profile.module';
 
 @Module({
-  imports: [JwtModule.register({secret: 'Alisultn',global: true}),AuthModule, ProfileModule],
+  imports: [JwtModule.register({secret: 'Citimarwaa',global: true}),AuthModule, ProfileModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })
